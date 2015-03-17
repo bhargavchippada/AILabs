@@ -28,10 +28,14 @@ verify(xor,L,B):- not(xor(L)).
 in(N, X):- and(connected(A, in(N, X)), terminal(A)), !, signal(A).
 in(N, X):- connected(A, in(N, X)), !, out(A).
  
-out(X):- type(X, and), !, and(in(1,X), in(2, X)).
-out(X):- type(X, or), !, or(in(1,X), in(2, X)).
-out(X):- type(X, not), !, not(in(1,X)).
-out(X):- type(X, xor), !, xor(in(1,X), in(2, X)).
+out(X):- type(X, and), connected(A,in(1,X)), connected(B,in(2,X)), !, and(in(1,X), in(2, X)).
+out(X):- type(X, and), write('circuit is open'),!.
+out(X):- type(X, or), connected(A,in(1,X)), connected(B,in(2,X)), !, or(in(1,X), in(2, X)).
+out(X):- type(X, or), write('circuit is open'),!.
+out(X):- type(X, not), connected(A,in(1,X)), !, not(in(1,X)).
+out(X):- type(X, not), write('circuit is open'),!.
+out(X):- type(X, xor), connected(A,in(1,X)), connected(B,in(2,X)), !, xor(in(1,X), in(2, X)).
+out(X):- type(X, xor), write('circuit is open'),!.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -41,7 +45,7 @@ goal(A,X):-retractall(signal(_)),fn(A,1),!,check(X).
 fn([], L).
 fn([A|B],L):-A,!,assert(signal(L)), increment(L,L1), fn(B, L1).
 fn([A|B],L):-increment(L,L1), fn(B, L1).
-check(X):-not(xor(X,output)).
+check(X):-not(xor(output,X)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
