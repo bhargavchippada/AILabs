@@ -17,3 +17,11 @@ type(g4,and).
 type(g5,or).
 
 output :- out(g5).
+
+increment(X,Y):-Y is X+1.
+
+goal(A,X):-retractall(signal(_)),fn(A,1),!,check(X).
+fn([], L).
+fn([A|B],L):-A,!,assert(signal(L)), increment(L,L1), fn(B, L1).
+fn([A|B],L):-increment(L,L1), fn(B, L1).
+check(X):-not(xor(X,output)).
