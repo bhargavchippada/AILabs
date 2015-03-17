@@ -1,4 +1,0 @@
-:- [general].
-signal(t1):- true.
-signal(t2):- true.
-type(A1)= XOR.

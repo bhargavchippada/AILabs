@@ -1,17 +1,4 @@
 :- [general].
-xor(A,B):-or(and(A,not(B)),and(not(A),B)).
-xor([]):-false.
-xor([A|B]):-xor(A, xor(B)).
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-in(N, X):- and(connected(A, in(N, X)), terminal(A)), !, signal(A).
-in(N, X):- connected(A, in(N, X)), !, out(A).
- 
-out(X):- type(X, and), !, and(in(1,X), in(2, X)).
-out(X):- type(X, or), !, or(in(1,X), in(2, X)).
-out(X):- type(X, not), !, not(in(1,X)).
-out(X):- type(X, xor), !, xor(in(1,X), in(2, X)). 
 
 terminal(a).
 terminal(b).

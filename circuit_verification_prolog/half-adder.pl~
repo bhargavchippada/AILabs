@@ -1,2 +1,0 @@
-:- [general].
-signal(t1):-true.
