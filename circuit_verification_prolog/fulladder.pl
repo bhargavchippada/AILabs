@@ -1,4 +1,4 @@
-:-[general].
+:-[test].
 
 terminal(1).
 terminal(2).
@@ -21,9 +21,7 @@ type(g3,xorop).
 type(g4,andop).
 type(g5,orop).
 
+output :- out(g5).
 
-sout(L,A):-fn(L,1),notop(xorop(A,out(g3))).
-cout(L,A):-fn(L,1),notop(xorop(A,out(g5))).
-%pish([true,false,true]).
 
 
