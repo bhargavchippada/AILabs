@@ -92,18 +92,39 @@ struct layer{
 	layer* previousLayer; //NULL for input layer
 	int numNodes;
 	vector<vector<double> > weights;
+	vector<double> output;
 
 	layer(layer* prev, layer* next, int n){
 		numNodes = n;
 		nextLayer = next;
 		previousLayer = prev;
+
+		for(int i=0; i< numNodes; i++){
+			output.push_back(0.0);
+		}
+
 		if(nextLayer!=NULL){
 			for(int i=0; i<numNodes; i++){
 				weights.push_back(*(new vector<double>()));
 				for(int j=0; j<nextLayer->numNodes; j++){
-					weights[i].push_back(0);
+					weights[i].push_back(1.0);
 				}
 			}	
+		}
+	}
+
+	void computeOutput(){
+		if(previousLayer==NULL){
+			nextLayer->computeOutput();
+		}else{
+			for(int i=0; i<numNodes; i++){
+				double val = 0.0;
+				for(int j=0; j<previousLayer->numNodes; j++){
+					val += (previousLayer->weights[j][i])*(previousLayer->output[j]);
+				}
+				output[i] = val;
+			}
+			if(nextLayer!=NULL) nextLayer->computeOutput();
 		}
 	}
 
@@ -120,6 +141,14 @@ struct layer{
 			nextLayer->print_weights();
 		}
 		
+	}
+
+	void print_output(){
+		for(int i=0; i<numNodes; i++){
+			cout<<output[i]<<" ";
+		}
+		cout<<endl;
+		if(nextLayer!=NULL) nextLayer->print_output();
 	}
 
 };
@@ -145,7 +174,15 @@ int main(){
 	outputLayer->previousLayer = hiddenLayer;
 	inputLayer = new layer(NULL,hiddenLayer,M);
 	inputLayer->nextLayer = hiddenLayer;
+	hiddenLayer->previousLayer = inputLayer;
 	inputLayer->print_weights();
+	inputLayer->output[0] = 0;
+	inputLayer->output[1] = 1;
+	inputLayer->output[2] = 0;
+	inputLayer->output[3] = 1;
+	inputLayer->output[4] = 1;
+	inputLayer->computeOutput();
+	inputLayer->print_output();
 	//print_gpMap();
 	//print_gp();
 }
