@@ -12,6 +12,8 @@ int num_graph=0;
 int num_phon=0;
 int M, N;
 
+int num_hiddenNodes = 0;
+
 void print_gp(){
 	for(int i=0; i<gpvec.size(); i++){
 		cout<<gpvec[i].first<<" ";
@@ -85,17 +87,65 @@ void parse(){
 	cout<<"No.of valid lines: "<<count<<endl;
 }
 
+struct layer{
+	layer* nextLayer; // NULL for output layer
+	layer* previousLayer; //NULL for input layer
+	int numNodes;
+	vector<vector<double> > weights;
+
+	layer(layer* prev, layer* next, int n){
+		numNodes = n;
+		nextLayer = next;
+		previousLayer = prev;
+		if(nextLayer!=NULL){
+			for(int i=0; i<numNodes; i++){
+				weights.push_back(*(new vector<double>()));
+				for(int j=0; j<nextLayer->numNodes; j++){
+					weights[i].push_back(0);
+				}
+			}	
+		}
+	}
+
+	void print_weights(){
+		if(nextLayer!=NULL){
+			cout<<endl;
+			for(int i=0; i<numNodes; i++){
+				for(int j=0; j<nextLayer->numNodes; j++){
+					cout<<weights[i][j]<<" ";
+				}
+				cout<<endl;
+			}
+			cout<<endl;
+			nextLayer->print_weights();
+		}
+		
+	}
+
+};
+
+layer* outputLayer;
+layer* inputLayer;
 
 
 int main(){
 	parse();
 	M = ceil(log2(num_graph));
 	N = ceil(log2(num_phon));
+	num_hiddenNodes = ceil((M+N)/2);
 	cout<<"Max grapheme/phoneme length: "<<MAXLEN<<endl;
 	cout<<"No.of distinct graphemes: "<<num_graph<<endl;
 	cout<<"No.of distinct phonemes: "<<num_phon<<endl;
 	cout<<"M: "<<M<<endl;
 	cout<<"N: "<<N<<endl;
+	cout<<"Num of hidden nodes: "<<num_hiddenNodes<<endl;
+
+	outputLayer = new layer(NULL,NULL,N);
+	layer* hiddenLayer = new layer(NULL, outputLayer, num_hiddenNodes);
+	outputLayer->previousLayer = hiddenLayer;
+	inputLayer = new layer(NULL,hiddenLayer,M);
+	inputLayer->nextLayer = hiddenLayer;
+	inputLayer->print_weights();
 	//print_gpMap();
 	//print_gp();
 }
