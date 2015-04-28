@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include <algorithm>
+#include <cmath>
 
 using namespace std;
 
@@ -9,6 +10,7 @@ map<char,int> graphMap;
 map<string,int> phonMap;
 int num_graph=0;
 int num_phon=0;
+int M, N;
 
 void print_gp(){
 	for(int i=0; i<gpvec.size(); i++){
@@ -30,23 +32,15 @@ void print_gpMap(){
     	cout << it->first << " => " << it->second << '\n';
 }
 
-bool illegalChars(string &s){
+string removeIllegalChars(string s){
+	string result;
 	int a;
 	for(int i=0; i<s.size(); i++){
 		a = s[i]-0;
-		// 
-		if(!((a<=90 && a>=65)||(a>=97 && a<=122) || (a>=48 && a<=57) || a==32 || a==40 || a==41)) return true;
+		if(!((a<=90 && a>=65)||(a>=97 && a<=122))) continue;
+		else result+=s[i];
 	}
-	/*
-	int leftbrac = s.find('(');
-	int rightbrac = s.find(')');
-	if(leftbrac==-1 && rightbrac==-1) return false;
-	else if(leftbrac!=-1 && rightbrac!=-1){
-		s = s.substr(0,leftbrac) + s.substr(rightbrac+1);
-		return false;
-	}else return true;
-	*/
-	return false;
+	return result;
 }
 
 void parse(){
@@ -59,16 +53,9 @@ void parse(){
 	    istringstream iss(line);
 	    string word;
 	    if (!(iss >> word)) break;
-	    if(illegalChars(line)){
-			continue;
-		}
 
-		int leftbrac = word.find('(');
-		int rightbrac = word.find(')');
-		if(leftbrac==-1 && rightbrac==-1);
-		else if(leftbrac!=-1 && rightbrac!=-1){
-			word = word.substr(0,leftbrac);
-		}else continue;
+		word = removeIllegalChars(word);
+		if(word.size()==0) continue;
 
 		string grapheme = word;
 		vector<string> phonemes;
@@ -96,14 +83,19 @@ void parse(){
 		count++;
 	}
 	cout<<"No.of valid lines: "<<count<<endl;
-	cout<<"Max grapheme/phoneme length: "<<MAXLEN<<endl;
-	cout<<"No.of distinct graphemes: "<<num_graph<<endl;
-	cout<<"No.of distinct phonemes: "<<num_phon<<endl;
 }
+
 
 
 int main(){
 	parse();
-	print_gpMap();
+	M = ceil(log2(num_graph));
+	N = ceil(log2(num_phon));
+	cout<<"Max grapheme/phoneme length: "<<MAXLEN<<endl;
+	cout<<"No.of distinct graphemes: "<<num_graph<<endl;
+	cout<<"No.of distinct phonemes: "<<num_phon<<endl;
+	cout<<"M: "<<M<<endl;
+	cout<<"N: "<<N<<endl;
+	//print_gpMap();
 	//print_gp();
 }
