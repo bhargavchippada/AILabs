@@ -2,14 +2,26 @@
 
 using namespace std;
 
+vector<pair<string,vector<string> > > gpvec;
+
+void print_gp(){
+	for(int i=0; i<gpvec.size(); i++){
+		cout<<gpvec[i].first<<" ";
+		for(int j=0; j<(gpvec[i].second).size(); j++){
+			cout<<(gpvec[i].second)[j]<<" ";
+		}
+		cout<<endl;
+	}
+}
 
 bool illegalChars(string &s){
 	int a;
 	for(int i=0; i<s.size(); i++){
 		a = s[i]-0;
-		if(!((a<=90 && a>=65)||(a>=97 && a<=122) || (a>=48 && a<=57) || a==32 || a==40 || a==41)) return true;
+		// || a==40 || a==41
+		if(!((a<=90 && a>=65)||(a>=97 && a<=122) || (a>=48 && a<=57) || a==32)) return true;
 	}
-
+	/*
 	int leftbrac = s.find('(');
 	int rightbrac = s.find(')');
 	if(leftbrac==-1 && rightbrac==-1) return false;
@@ -17,7 +29,7 @@ bool illegalChars(string &s){
 		s = s.substr(0,leftbrac) + s.substr(rightbrac+1);
 		return false;
 	}else return true;
-
+	*/
 	return false;
 }
 
@@ -34,6 +46,13 @@ void parse(){
 	    if(illegalChars(line)){
 			continue;
 		}
+		string grapheme = word;
+		vector<string> phonemes;
+		while((iss >> word)){
+			phonemes.push_back(word);
+		}
+		if(phonemes.size()!=grapheme.size()) continue;
+		gpvec.push_back(make_pair(grapheme,phonemes));
 		//cout<<line<<endl;
 		count++;
 	}
@@ -42,5 +61,6 @@ void parse(){
 
 
 int main(){
-	parse();	
+	parse();
+	//print_gp();
 }
